@@ -1,10 +1,11 @@
 package etherless.example.timefighter
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.support.v7.app.AppCompatActivity
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 
 class MainActivity : AppCompatActivity() {
     internal lateinit var tapMeButton: Button
@@ -13,7 +14,7 @@ class MainActivity : AppCompatActivity() {
     internal var score: Int = 0
     internal var gameStarted: Boolean = false
     internal lateinit var countDownTimer: CountDownTimer
-    internal var initialCountDown: Long = 60000
+    internal var initialCountDown: Long = 5000
     internal var countDownInterval: Long = 1000
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,28 +37,44 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun incrementScore() {
+        if (!gameStarted) {
+            startGame()
+        }
+
         this.score += 1;
         this.setScore()
+    }
+
+    private fun startGame() {
+        countDownTimer.start()
+        gameStarted = true
     }
 
     private fun resetGame() {
         score = 0
         this.setScore()
 
-        val initialTimeLeft = this.initialCountDown / 1000
+        val initialTimeLeft = this.initialCountDown / countDownInterval
         timeLeftTextView.text = getString(R.string.timeLeft, initialTimeLeft.toString())
 
         countDownTimer = object: CountDownTimer(initialCountDown, countDownInterval) {
             override fun onTick(millisUntilFinished: Long) {
-                val timeLeft = millisUntilFinished / 1000
+                val timeLeft = millisUntilFinished / countDownInterval
                 timeLeftTextView.text = getString(R.string.timeLeft, timeLeft.toString())
             }
 
             override fun onFinish() {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+               endGame()
             }
         }
 
         gameStarted = false
     }
+
+    private fun endGame() {
+        Toast.makeText(this, getString(R.string.gameOverMessage, score.toString()), Toast.LENGTH_LONG).show()
+        resetGame()
+    }
+
+
 }

@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
             this.resetGame()
         }
 
-        tapMeButton.setOnClickListener { view ->
+        tapMeButton.setOnClickListener {
             incrementScore()
         }
     }
